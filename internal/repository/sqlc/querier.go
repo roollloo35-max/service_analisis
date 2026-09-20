@@ -9,8 +9,12 @@ import (
 )
 
 type Querier interface {
+	CreateCampaign(ctx context.Context, arg CreateCampaignParams) (CreateCampaignRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	GetAllCampaigns(ctx context.Context) ([]GetAllCampaignsRow, error)
+	GetCampaign(ctx context.Context, id int64) (GetCampaignRow, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
+	UpdateCampaign(ctx context.Context, arg UpdateCampaignParams) (UpdateCampaignRow, error)
 	UpвateUsers(ctx context.Context, arg UpвateUsersParams) (User, error)
 }
 

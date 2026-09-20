@@ -10,16 +10,15 @@ import (
 )
 
 type Campaign struct {
-	ID           int64        `json:"id"`
-	Names        string       `json:"names"`
-	Statuse      string       `json:"statuse"`
-	CreatedAt    time.Time    `json:"created_at"`
-	Budget       string       `json:"budget"`
-	CostPerClick string       `json:"cost_per_click"`
-	TargetUrl    string       `json:"target_url"`
-	StartDates   time.Time    `json:"start_dates"`
-	EndDate      sql.NullTime `json:"end_date"`
-	LastUpdate   sql.NullTime `json:"last_update"`
+	ID         int64        `json:"id"`
+	Name       string       `json:"name"`
+	Status     string       `json:"status"`
+	CreatedAt  time.Time    `json:"created_at"`
+	Budget     string       `json:"budget"`
+	TargetUrl  string       `json:"target_url"`
+	StartDate  time.Time    `json:"start_date"`
+	EndDate    sql.NullTime `json:"end_date"`
+	LastUpdate sql.NullTime `json:"last_update"`
 }
 
 type ConversionEvent struct {
