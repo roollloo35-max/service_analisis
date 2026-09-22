@@ -7,18 +7,20 @@ package sqlc
 import (
 	"database/sql"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type Campaign struct {
-	ID         int64        `json:"id"`
-	Name       string       `json:"name"`
-	Status     string       `json:"status"`
-	CreatedAt  time.Time    `json:"created_at"`
-	Budget     string       `json:"budget"`
-	TargetUrl  string       `json:"target_url"`
-	StartDate  time.Time    `json:"start_date"`
-	EndDate    sql.NullTime `json:"end_date"`
-	LastUpdate sql.NullTime `json:"last_update"`
+	ID         int64           `json:"id"`
+	Name       string          `json:"name"`
+	Status     string          `json:"status"`
+	CreatedAt  time.Time       `json:"created_at"`
+	Budget     decimal.Decimal `json:"budget"`
+	TargetUrl  string          `json:"target_url"`
+	StartDate  time.Time       `json:"start_date"`
+	EndDate    sql.NullTime    `json:"end_date"`
+	LastUpdate sql.NullTime    `json:"last_update"`
 }
 
 type ConversionEvent struct {
@@ -26,19 +28,19 @@ type ConversionEvent struct {
 	CampaignID int64     `json:"campaign_id"`
 	OccurredAt time.Time `json:"occurred_at"`
 	// can be negative or positive
-	Amount sql.NullString `json:"amount"`
+	Amount decimal.Decimal `json:"amount"`
 }
 
 type DailyStat struct {
-	ID          int64          `json:"id"`
-	CampaignID  int64          `json:"campaign_id"`
-	DateDaily   time.Time      `json:"date_daily"`
-	Impressions int64          `json:"impressions"`
-	Clicks      int64          `json:"clicks"`
-	Cost        string         `json:"cost"`
-	Conversion  sql.NullInt32  `json:"conversion"`
-	Revenue     sql.NullString `json:"revenue"`
-	Reach       int64          `json:"reach"`
+	ID          int64           `json:"id"`
+	CampaignID  int64           `json:"campaign_id"`
+	DateDaily   time.Time       `json:"date_daily"`
+	Impressions int64           `json:"impressions"`
+	Clicks      int64           `json:"clicks"`
+	Cost        decimal.Decimal `json:"cost"`
+	Conversion  sql.NullInt32   `json:"conversion"`
+	Revenue     decimal.Decimal `json:"revenue"`
+	Reach       int64           `json:"reach"`
 }
 
 type User struct {

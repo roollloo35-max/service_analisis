@@ -11,3 +11,4 @@ alter table campaigns
     alter column start_dates type timestamptz using start_dates::timestamptz,
     alter column end_date type timestamptz using end_date::timestamptz;
     
+ 

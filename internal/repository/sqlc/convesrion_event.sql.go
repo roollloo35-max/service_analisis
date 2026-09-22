@@ -9,6 +9,8 @@ import (
 	"context"
 	"database/sql"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 const createConversionEvent = `-- name: CreateConversionEvent :one
@@ -24,9 +26,9 @@ insert into conversion_event
 `
 
 type CreateConversionEventParams struct {
-	CampaignID int64          `json:"campaign_id"`
-	OccurredAt time.Time      `json:"occurred_at"`
-	Amount     sql.NullString `json:"amount"`
+	CampaignID int64           `json:"campaign_id"`
+	OccurredAt time.Time       `json:"occurred_at"`
+	Amount     decimal.Decimal `json:"amount"`
 }
 
 func (q *Queries) CreateConversionEvent(ctx context.Context, arg CreateConversionEventParams) (ConversionEvent, error) {
@@ -70,10 +72,10 @@ update conversion_event
 `
 
 type UpDataConversionParams struct {
-	NewCampaignID sql.NullInt64  `json:"new_campaign_id"`
-	NewOccurredAt sql.NullTime   `json:"new_occurred_at"`
-	NewAmount     sql.NullString `json:"new_amount"`
-	ID            int64          `json:"id"`
+	NewCampaignID sql.NullInt64   `json:"new_campaign_id"`
+	NewOccurredAt sql.NullTime    `json:"new_occurred_at"`
+	NewAmount     decimal.Decimal `json:"new_amount"`
+	ID            int64           `json:"id"`
 }
 
 func (q *Queries) UpDataConversion(ctx context.Context, arg UpDataConversionParams) (ConversionEvent, error) {

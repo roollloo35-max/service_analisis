@@ -20,6 +20,7 @@ func main() {
 		log.Fatalf("Failed to connected to the DataBase")
 	} else {
 		log.Println("Connection to DataBase succesfull ")
+
 	}
 
 	if err := conn.Ping(ctxToPing); err != nil {

@@ -9,6 +9,8 @@ import (
 	"context"
 	"database/sql"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 const createDailyStat = `-- name: CreateDailyStat :one
@@ -26,14 +28,14 @@ insert into daily_stat(
 `
 
 type CreateDailyStatParams struct {
-	CampaignID  int64          `json:"campaign_id"`
-	DateDaily   time.Time      `json:"date_daily"`
-	Impressions int64          `json:"impressions"`
-	Clicks      int64          `json:"clicks"`
-	Cost        string         `json:"cost"`
-	Conversion  sql.NullInt32  `json:"conversion"`
-	Revenue     sql.NullString `json:"revenue"`
-	Reach       int64          `json:"reach"`
+	CampaignID  int64           `json:"campaign_id"`
+	DateDaily   time.Time       `json:"date_daily"`
+	Impressions int64           `json:"impressions"`
+	Clicks      int64           `json:"clicks"`
+	Cost        decimal.Decimal `json:"cost"`
+	Conversion  sql.NullInt32   `json:"conversion"`
+	Revenue     decimal.Decimal `json:"revenue"`
+	Reach       int64           `json:"reach"`
 }
 
 func (q *Queries) CreateDailyStat(ctx context.Context, arg CreateDailyStatParams) (DailyStat, error) {
@@ -155,15 +157,15 @@ where
 `
 
 type UpdateDailyParams struct {
-	NewCampaignID sql.NullInt64  `json:"new_campaign_id"`
-	DateDaily     sql.NullTime   `json:"date_daily"`
-	Impressions   sql.NullInt64  `json:"impressions"`
-	Clicks        sql.NullInt64  `json:"clicks"`
-	Cost          sql.NullString `json:"cost"`
-	Conversion    sql.NullInt32  `json:"conversion"`
-	Revenue       sql.NullString `json:"revenue"`
-	Reach         sql.NullInt64  `json:"reach"`
-	ID            int64          `json:"id"`
+	NewCampaignID sql.NullInt64   `json:"new_campaign_id"`
+	DateDaily     sql.NullTime    `json:"date_daily"`
+	Impressions   sql.NullInt64   `json:"impressions"`
+	Clicks        sql.NullInt64   `json:"clicks"`
+	Cost          decimal.Decimal `json:"cost"`
+	Conversion    sql.NullInt32   `json:"conversion"`
+	Revenue       decimal.Decimal `json:"revenue"`
+	Reach         sql.NullInt64   `json:"reach"`
+	ID            int64           `json:"id"`
 }
 
 func (q *Queries) UpdateDaily(ctx context.Context, arg UpdateDailyParams) (DailyStat, error) {

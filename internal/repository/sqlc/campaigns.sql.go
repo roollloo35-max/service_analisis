@@ -9,6 +9,8 @@ import (
 	"context"
 	"database/sql"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 const createCampaign = `-- name: CreateCampaign :one
@@ -36,23 +38,23 @@ values
 `
 
 type CreateCampaignParams struct {
-	Name      string       `json:"name"`
-	Status    string       `json:"status"`
-	Budget    string       `json:"budget"`
-	Column4   string       `json:"column_4"`
-	StartDate time.Time    `json:"start_date"`
-	EndDate   sql.NullTime `json:"end_date"`
+	Name      string          `json:"name"`
+	Status    string          `json:"status"`
+	Budget    decimal.Decimal `json:"budget"`
+	Column4   string          `json:"column_4"`
+	StartDate time.Time       `json:"start_date"`
+	EndDate   sql.NullTime    `json:"end_date"`
 }
 
 type CreateCampaignRow struct {
-	ID         int64        `json:"id"`
-	Name       string       `json:"name"`
-	Status     string       `json:"status"`
-	Budget     string       `json:"budget"`
-	TargetUrl  string       `json:"target_url"`
-	StartDate  time.Time    `json:"start_date"`
-	EndDate    sql.NullTime `json:"end_date"`
-	LastUpdate sql.NullTime `json:"last_update"`
+	ID         int64           `json:"id"`
+	Name       string          `json:"name"`
+	Status     string          `json:"status"`
+	Budget     decimal.Decimal `json:"budget"`
+	TargetUrl  string          `json:"target_url"`
+	StartDate  time.Time       `json:"start_date"`
+	EndDate    sql.NullTime    `json:"end_date"`
+	LastUpdate sql.NullTime    `json:"last_update"`
 }
 
 func (q *Queries) CreateCampaign(ctx context.Context, arg CreateCampaignParams) (CreateCampaignRow, error) {
@@ -94,14 +96,14 @@ order by id
 `
 
 type GetAllCampaignsRow struct {
-	ID         int64        `json:"id"`
-	Name       string       `json:"name"`
-	Status     string       `json:"status"`
-	Budget     string       `json:"budget"`
-	TargetUrl  string       `json:"target_url"`
-	StartDate  time.Time    `json:"start_date"`
-	EndDate    sql.NullTime `json:"end_date"`
-	LastUpdate sql.NullTime `json:"last_update"`
+	ID         int64           `json:"id"`
+	Name       string          `json:"name"`
+	Status     string          `json:"status"`
+	Budget     decimal.Decimal `json:"budget"`
+	TargetUrl  string          `json:"target_url"`
+	StartDate  time.Time       `json:"start_date"`
+	EndDate    sql.NullTime    `json:"end_date"`
+	LastUpdate sql.NullTime    `json:"last_update"`
 }
 
 func (q *Queries) GetAllCampaigns(ctx context.Context) ([]GetAllCampaignsRow, error) {
@@ -153,14 +155,14 @@ where
 `
 
 type GetCampaignRow struct {
-	ID         int64        `json:"id"`
-	Name       string       `json:"name"`
-	Status     string       `json:"status"`
-	Budget     string       `json:"budget"`
-	TargetUrl  string       `json:"target_url"`
-	StartDate  time.Time    `json:"start_date"`
-	EndDate    sql.NullTime `json:"end_date"`
-	LastUpdate sql.NullTime `json:"last_update"`
+	ID         int64           `json:"id"`
+	Name       string          `json:"name"`
+	Status     string          `json:"status"`
+	Budget     decimal.Decimal `json:"budget"`
+	TargetUrl  string          `json:"target_url"`
+	StartDate  time.Time       `json:"start_date"`
+	EndDate    sql.NullTime    `json:"end_date"`
+	LastUpdate sql.NullTime    `json:"last_update"`
 }
 
 func (q *Queries) GetCampaign(ctx context.Context, id int64) (GetCampaignRow, error) {
@@ -203,24 +205,24 @@ where
 `
 
 type UpdateCampaignParams struct {
-	NewName      sql.NullString `json:"new_name"`
-	NewStatus    sql.NullString `json:"new_status"`
-	NewBudget    sql.NullString `json:"new_budget"`
-	NewTargetUrl sql.NullString `json:"new_target_url"`
-	NewStartDate sql.NullTime   `json:"new_start_date"`
-	NewEndDate   sql.NullTime   `json:"new_end_date"`
-	ID           int64          `json:"id"`
+	NewName      sql.NullString  `json:"new_name"`
+	NewStatus    sql.NullString  `json:"new_status"`
+	NewBudget    decimal.Decimal `json:"new_budget"`
+	NewTargetUrl sql.NullString  `json:"new_target_url"`
+	NewStartDate sql.NullTime    `json:"new_start_date"`
+	NewEndDate   sql.NullTime    `json:"new_end_date"`
+	ID           int64           `json:"id"`
 }
 
 type UpdateCampaignRow struct {
-	ID         int64        `json:"id"`
-	Name       string       `json:"name"`
-	Status     string       `json:"status"`
-	Budget     string       `json:"budget"`
-	TargetUrl  string       `json:"target_url"`
-	StartDate  time.Time    `json:"start_date"`
-	EndDate    sql.NullTime `json:"end_date"`
-	LastUpdate sql.NullTime `json:"last_update"`
+	ID         int64           `json:"id"`
+	Name       string          `json:"name"`
+	Status     string          `json:"status"`
+	Budget     decimal.Decimal `json:"budget"`
+	TargetUrl  string          `json:"target_url"`
+	StartDate  time.Time       `json:"start_date"`
+	EndDate    sql.NullTime    `json:"end_date"`
+	LastUpdate sql.NullTime    `json:"last_update"`
 }
 
 func (q *Queries) UpdateCampaign(ctx context.Context, arg UpdateCampaignParams) (UpdateCampaignRow, error) {
