@@ -32,12 +32,13 @@ type ConversionEvent struct {
 type DailyStat struct {
 	ID          int64          `json:"id"`
 	CampaignID  int64          `json:"campaign_id"`
-	Dates       time.Time      `json:"dates"`
+	DateDaily   time.Time      `json:"date_daily"`
 	Impressions int64          `json:"impressions"`
 	Clicks      int64          `json:"clicks"`
 	Cost        string         `json:"cost"`
 	Conversion  sql.NullInt32  `json:"conversion"`
 	Revenue     sql.NullString `json:"revenue"`
+	Reach       int64          `json:"reach"`
 }
 
 type User struct {
