@@ -1,0 +1,1 @@
+alter table campaigns add column cost_per_click numeric(12,2) not null default 0;
