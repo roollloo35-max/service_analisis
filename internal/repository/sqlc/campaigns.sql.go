@@ -25,7 +25,7 @@ insert into
         last_update
     )
 values
-    ($1, $2, $3, $4::text, $5, $6, now()) 
+    ($1, $2, $3, $4, $5, $6, now()) 
     returning 
     id,
     name,
@@ -41,7 +41,7 @@ type CreateCampaignParams struct {
 	Name      string          `json:"name"`
 	Status    string          `json:"status"`
 	Budget    decimal.Decimal `json:"budget"`
-	Column4   string          `json:"column_4"`
+	TargetUrl string          `json:"target_url"`
 	StartDate time.Time       `json:"start_date"`
 	EndDate   sql.NullTime    `json:"end_date"`
 }
@@ -62,7 +62,7 @@ func (q *Queries) CreateCampaign(ctx context.Context, arg CreateCampaignParams) 
 		arg.Name,
 		arg.Status,
 		arg.Budget,
-		arg.Column4,
+		arg.TargetUrl,
 		arg.StartDate,
 		arg.EndDate,
 	)
@@ -205,24 +205,24 @@ where
 `
 
 type UpdateCampaignParams struct {
-	NewName      sql.NullString  `json:"new_name"`
-	NewStatus    sql.NullString  `json:"new_status"`
-	NewBudget    decimal.Decimal `json:"new_budget"`
-	NewTargetUrl sql.NullString  `json:"new_target_url"`
-	NewStartDate sql.NullTime    `json:"new_start_date"`
-	NewEndDate   sql.NullTime    `json:"new_end_date"`
-	ID           int64           `json:"id"`
+	NewName      sql.NullString      `json:"new_name"`
+	NewStatus    sql.NullString      `json:"new_status"`
+	NewBudget    decimal.NullDecimal `json:"new_budget"`
+	NewTargetUrl sql.NullString      `json:"new_target_url"`
+	NewStartDate sql.NullTime        `json:"new_start_date"`
+	NewEndDate   sql.NullTime        `json:"new_end_date"`
+	ID           int64               `json:"id"`
 }
 
 type UpdateCampaignRow struct {
-	ID         int64           `json:"id"`
-	Name       string          `json:"name"`
-	Status     string          `json:"status"`
-	Budget     decimal.Decimal `json:"budget"`
-	TargetUrl  string          `json:"target_url"`
-	StartDate  time.Time       `json:"start_date"`
-	EndDate    sql.NullTime    `json:"end_date"`
-	LastUpdate sql.NullTime    `json:"last_update"`
+	ID         int64               `json:"id"`
+	Name       string              `json:"name"`
+	Status     string              `json:"status"`
+	Budget     decimal.NullDecimal `json:"budget"`
+	TargetUrl  string              `json:"target_url"`
+	StartDate  time.Time           `json:"start_date"`
+	EndDate    sql.NullTime        `json:"end_date"`
+	LastUpdate sql.NullTime        `json:"last_update"`
 }
 
 func (q *Queries) UpdateCampaign(ctx context.Context, arg UpdateCampaignParams) (UpdateCampaignRow, error) {

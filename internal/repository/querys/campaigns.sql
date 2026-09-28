@@ -10,7 +10,7 @@ insert into
         last_update
     )
 values
-    ($1, $2, $3, $4::text, $5, $6, now()) 
+    ($1, $2, $3, $4, $5, $6, now()) 
     returning 
     id,
     name,

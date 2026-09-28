@@ -23,7 +23,7 @@ select  id,campaign_id, date_daily, impressions,
     limit $1 offset $2;
 
 -- name: GetDaily :one 
-    select  id,campaign_id, date_daily, impressions,
+select  id,campaign_id, date_daily, impressions,
     clicks,
     cost,
     conversion,

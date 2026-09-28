@@ -5,7 +5,7 @@ alter table campaigns
     rename column name to names;
 
 alter table campaigns
-    rename column status to statuses;
+    rename column status to statuse;
     
 alter table campaigns
     alter column start_dates type timestamptz using start_dates::timestamptz,

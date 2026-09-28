@@ -27,11 +27,45 @@ type Campaign struct {
 	LastUpdate time.Time
 }
 
-type CampaignPatch struct {
+type CampaignPath struct {
 	Name      *string
 	Status    *Status // enaum
 	Budget    *decimal.Decimal
 	TargetURL *string
 	StartDate *time.Time
 	EndDate   *time.Time
+}
+
+type DailyStat struct {
+	ID         int64
+	CampaignID int64
+	DateDaily  time.Time
+	Impression int64
+	Clicks     int64
+	Cost       decimal.Decimal
+	Conversion int32
+	Revenue    decimal.Decimal
+	Reach      int64
+}
+
+type DailyStatPath struct {
+	CampaignID *int64
+	DateDaily  *time.Time
+	Impression *int64
+	Clicks     *int64
+	Cost       *decimal.Decimal
+	Conversion *int32
+	Revenue    *decimal.Decimal
+	Reach      *int64
+}
+
+type ConversionEvent struct {
+	ID         int64
+	CampaignID int64
+	OccurredAt time.Time
+	Amount     decimal.Decimal
+}
+
+type ConversionEventPath struct {
+	Amount *decimal.Decimal
 }

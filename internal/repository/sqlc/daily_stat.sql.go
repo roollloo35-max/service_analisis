@@ -157,15 +157,15 @@ where
 `
 
 type UpdateDailyParams struct {
-	NewCampaignID sql.NullInt64   `json:"new_campaign_id"`
-	DateDaily     sql.NullTime    `json:"date_daily"`
-	Impressions   sql.NullInt64   `json:"impressions"`
-	Clicks        sql.NullInt64   `json:"clicks"`
-	Cost          decimal.Decimal `json:"cost"`
-	Conversion    sql.NullInt32   `json:"conversion"`
-	Revenue       decimal.Decimal `json:"revenue"`
-	Reach         sql.NullInt64   `json:"reach"`
-	ID            int64           `json:"id"`
+	NewCampaignID sql.NullInt64       `json:"new_campaign_id"`
+	DateDaily     sql.NullTime        `json:"date_daily"`
+	Impressions   sql.NullInt64       `json:"impressions"`
+	Clicks        sql.NullInt64       `json:"clicks"`
+	Cost          decimal.NullDecimal `json:"cost"`
+	Conversion    sql.NullInt32       `json:"conversion"`
+	Revenue       decimal.NullDecimal `json:"revenue"`
+	Reach         sql.NullInt64       `json:"reach"`
+	ID            int64               `json:"id"`
 }
 
 func (q *Queries) UpdateDaily(ctx context.Context, arg UpdateDailyParams) (DailyStat, error) {

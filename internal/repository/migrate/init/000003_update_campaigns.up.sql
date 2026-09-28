@@ -12,4 +12,4 @@ alter table campaigns
     rename column names to name;
 
 alter table campaigns
-    rename column statuses to status;
+    rename column statuse to status;
