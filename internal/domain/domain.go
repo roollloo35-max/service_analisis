@@ -67,5 +67,7 @@ type ConversionEvent struct {
 }
 
 type ConversionEventPath struct {
-	Amount *decimal.Decimal
+	CampaignID *int64
+	OccurredAt *time.Time
+	Amount     *decimal.Decimal
 }

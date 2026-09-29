@@ -72,10 +72,10 @@ update conversion_event
 `
 
 type UpDataConversionParams struct {
-	NewCampaignID sql.NullInt64   `json:"new_campaign_id"`
-	NewOccurredAt sql.NullTime    `json:"new_occurred_at"`
-	NewAmount     decimal.Decimal `json:"new_amount"`
-	ID            int64           `json:"id"`
+	NewCampaignID sql.NullInt64       `json:"new_campaign_id"`
+	NewOccurredAt sql.NullTime        `json:"new_occurred_at"`
+	NewAmount     decimal.NullDecimal `json:"new_amount"`
+	ID            int64               `json:"id"`
 }
 
 func (q *Queries) UpDataConversion(ctx context.Context, arg UpDataConversionParams) (ConversionEvent, error) {

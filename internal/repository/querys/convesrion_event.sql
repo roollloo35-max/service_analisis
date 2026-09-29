@@ -7,7 +7,7 @@ insert into conversion_event
     occurred_at,
     amount
 
-) values ($1, $2, $3) returning id, campaign_id, occurred_at, amount;
+) values ($1, now(), $3) returning id, campaign_id, occurred_at, amount;
 
 
 -- name: GetConversion :one 
