@@ -8,7 +8,6 @@ package sqlc
 import (
 	"context"
 	"database/sql"
-	"time"
 
 	"github.com/shopspring/decimal"
 )
@@ -22,17 +21,16 @@ insert into conversion_event
     occurred_at,
     amount
 
-) values ($1, $2, $3) returning id, campaign_id, occurred_at, amount
+) values ($1, now(), $2) returning id, campaign_id, occurred_at, amount
 `
 
 type CreateConversionEventParams struct {
 	CampaignID int64           `json:"campaign_id"`
-	OccurredAt time.Time       `json:"occurred_at"`
 	Amount     decimal.Decimal `json:"amount"`
 }
 
 func (q *Queries) CreateConversionEvent(ctx context.Context, arg CreateConversionEventParams) (ConversionEvent, error) {
-	row := q.db.QueryRowContext(ctx, createConversionEvent, arg.CampaignID, arg.OccurredAt, arg.Amount)
+	row := q.db.QueryRowContext(ctx, createConversionEvent, arg.CampaignID, arg.Amount)
 	var i ConversionEvent
 	err := row.Scan(
 		&i.ID,

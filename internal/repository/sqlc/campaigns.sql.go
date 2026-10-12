@@ -88,12 +88,18 @@ select
     budget,
     target_url,
     start_date,
+    created_at,
     end_date,
     last_update
 from
     campaigns
-order by id
+order by id offset $1 limit $2
 `
+
+type GetAllCampaignsParams struct {
+	Offset int32 `json:"offset"`
+	Limit  int32 `json:"limit"`
+}
 
 type GetAllCampaignsRow struct {
 	ID         int64           `json:"id"`
@@ -102,12 +108,13 @@ type GetAllCampaignsRow struct {
 	Budget     decimal.Decimal `json:"budget"`
 	TargetUrl  string          `json:"target_url"`
 	StartDate  time.Time       `json:"start_date"`
+	CreatedAt  time.Time       `json:"created_at"`
 	EndDate    sql.NullTime    `json:"end_date"`
 	LastUpdate sql.NullTime    `json:"last_update"`
 }
 
-func (q *Queries) GetAllCampaigns(ctx context.Context) ([]GetAllCampaignsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getAllCampaigns)
+func (q *Queries) GetAllCampaigns(ctx context.Context, arg GetAllCampaignsParams) ([]GetAllCampaignsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllCampaigns, arg.Offset, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -122,6 +129,7 @@ func (q *Queries) GetAllCampaigns(ctx context.Context) ([]GetAllCampaignsRow, er
 			&i.Budget,
 			&i.TargetUrl,
 			&i.StartDate,
+			&i.CreatedAt,
 			&i.EndDate,
 			&i.LastUpdate,
 		); err != nil {
@@ -145,7 +153,8 @@ select
     status,
     budget,
     target_url,
-    start_date,
+    start_date, 
+    created_at,
     end_date,
     last_update
 from
@@ -161,6 +170,7 @@ type GetCampaignRow struct {
 	Budget     decimal.Decimal `json:"budget"`
 	TargetUrl  string          `json:"target_url"`
 	StartDate  time.Time       `json:"start_date"`
+	CreatedAt  time.Time       `json:"created_at"`
 	EndDate    sql.NullTime    `json:"end_date"`
 	LastUpdate sql.NullTime    `json:"last_update"`
 }
@@ -175,6 +185,7 @@ func (q *Queries) GetCampaign(ctx context.Context, id int64) (GetCampaignRow, er
 		&i.Budget,
 		&i.TargetUrl,
 		&i.StartDate,
+		&i.CreatedAt,
 		&i.EndDate,
 		&i.LastUpdate,
 	)

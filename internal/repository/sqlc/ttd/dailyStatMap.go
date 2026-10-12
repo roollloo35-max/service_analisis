@@ -21,6 +21,16 @@ func toDomainDailyStat(row sqlc.DailyStat) domain.DailyStat {
 
 }
 
+func toDomainDailyStats(rows []sqlc.DailyStat) []domain.DailyStat {
+	out := make([]domain.DailyStat, len(rows))
+
+	for i, row := range rows {
+		out[i] = toDomainDailyStat(row)
+	}
+
+	return out
+}
+
 func toCreateDailyStatParams(ds domain.DailyStat) sqlc.CreateDailyStatParams {
 	return sqlc.CreateDailyStatParams{
 		CampaignID:  ds.CampaignID,

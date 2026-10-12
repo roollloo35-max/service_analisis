@@ -65,7 +65,7 @@ func (q *Queries) CreateDailyStat(ctx context.Context, arg CreateDailyStatParams
 }
 
 const getDaily = `-- name: GetDaily :one
-    select  id,campaign_id, date_daily, impressions,
+select  id,campaign_id, date_daily, impressions,
     clicks,
     cost,
     conversion,

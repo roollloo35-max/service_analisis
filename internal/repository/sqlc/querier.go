@@ -13,7 +13,7 @@ type Querier interface {
 	CreateConversionEvent(ctx context.Context, arg CreateConversionEventParams) (ConversionEvent, error)
 	CreateDailyStat(ctx context.Context, arg CreateDailyStatParams) (DailyStat, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	GetAllCampaigns(ctx context.Context) ([]GetAllCampaignsRow, error)
+	GetAllCampaigns(ctx context.Context, arg GetAllCampaignsParams) ([]GetAllCampaignsRow, error)
 	GetCampaign(ctx context.Context, id int64) (GetCampaignRow, error)
 	GetConversion(ctx context.Context, id int64) (ConversionEvent, error)
 	GetDaily(ctx context.Context, id int64) (DailyStat, error)

@@ -28,7 +28,8 @@ select
     status,
     budget,
     target_url,
-    start_date,
+    start_date, 
+    created_at,
     end_date,
     last_update
 from
@@ -44,11 +45,12 @@ select
     budget,
     target_url,
     start_date,
+    created_at,
     end_date,
     last_update
 from
     campaigns
-order by id;
+order by id offset $1 limit $2;
 
 -- name: UpdateCampaign :one
 update
