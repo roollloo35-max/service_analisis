@@ -26,6 +26,19 @@ func ToDomaintCampaign(row sqlc.Campaign) domain.Campaign {
 	}
 }
 
+func ToCampaignRow(row sqlc.CreateCampaignRow) sqlc.Campaign {
+	return sqlc.Campaign{
+		ID:         row.ID,
+		Name:       row.Name,
+		Status:     row.Status,
+		Budget:     row.Budget,
+		TargetUrl:  row.TargetUrl,
+		StartDate:  row.StartDate,
+		EndDate:    row.EndDate,
+		LastUpdate: row.EndDate,
+	}
+}
+
 func ToGetCampaign(row sqlc.GetCampaignRow) domain.Campaign {
 	var endDate *time.Time
 
@@ -43,6 +56,13 @@ func ToGetCampaign(row sqlc.GetCampaignRow) domain.Campaign {
 		StartDate:  row.StartDate,
 		EndDate:    endDate,
 		LastUpdate: row.LastUpdate.Time,
+	}
+}
+
+func ToListCampaignParams(offset int32, limit int32) sqlc.GetAllCampaignsParams {
+	return sqlc.GetAllCampaignsParams{
+		Offset: offset,
+		Limit:  limit,
 	}
 }
 

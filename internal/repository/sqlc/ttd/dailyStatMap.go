@@ -5,7 +5,7 @@ import (
 	"alisisService/internal/repository/sqlc"
 )
 
-func toDomainDailyStat(row sqlc.DailyStat) domain.DailyStat {
+func ToDomainDailyStat(row sqlc.DailyStat) domain.DailyStat {
 
 	return domain.DailyStat{
 		ID:         row.ID,
@@ -21,17 +21,24 @@ func toDomainDailyStat(row sqlc.DailyStat) domain.DailyStat {
 
 }
 
-func toDomainDailyStats(rows []sqlc.DailyStat) []domain.DailyStat {
+func ToDomainDailyStatParams(limit int32, offset int32) sqlc.GetDailysParams {
+	return sqlc.GetDailysParams{
+		Limit:  limit,
+		Offset: offset,
+	}
+}
+
+func ToDomainDailyStats(rows []sqlc.DailyStat) []domain.DailyStat {
 	out := make([]domain.DailyStat, len(rows))
 
 	for i, row := range rows {
-		out[i] = toDomainDailyStat(row)
+		out[i] = ToDomainDailyStat(row)
 	}
 
 	return out
 }
 
-func toCreateDailyStatParams(ds domain.DailyStat) sqlc.CreateDailyStatParams {
+func ToCreateDailyStatParams(ds domain.DailyStat) sqlc.CreateDailyStatParams {
 	return sqlc.CreateDailyStatParams{
 		CampaignID:  ds.CampaignID,
 		DateDaily:   ds.DateDaily,
@@ -44,7 +51,7 @@ func toCreateDailyStatParams(ds domain.DailyStat) sqlc.CreateDailyStatParams {
 	}
 }
 
-func toUpdateDailyStat(id int64, dsp domain.DailyStatPath) sqlc.UpdateDailyParams {
+func ToUpdateDailyStat(id int64, dsp domain.DailyStatPath) sqlc.UpdateDailyParams {
 	return sqlc.UpdateDailyParams{
 		NewCampaignID: toNullInt64(dsp.CampaignID),
 		DateDaily:     toNullTime(dsp.DateDaily),
