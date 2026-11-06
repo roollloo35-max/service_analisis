@@ -24,16 +24,22 @@ type Campaign struct {
 	TargetURL  string
 	StartDate  time.Time
 	EndDate    *time.Time
-	LastUpdate time.Time
+	LastUpdate *time.Time
+	ExternalID *int64
+	DeleteAtr  bool
+	VersionAtr int64
 }
 
 type CampaignPath struct {
-	Name      *string
-	Status    *Status // enaum
-	Budget    *decimal.Decimal
-	TargetURL *string
-	StartDate *time.Time
-	EndDate   *time.Time
+	Name       *string
+	Status     *Status // enaum
+	Budget     *decimal.Decimal
+	TargetURL  *string
+	StartDate  *time.Time
+	EndDate    *time.Time
+	ExternalID *int64
+	DeleteAtr  *bool
+	VersionAtr *int64
 }
 
 type DailyStat struct {
@@ -43,7 +49,7 @@ type DailyStat struct {
 	Impression int64
 	Clicks     int64
 	Cost       decimal.Decimal
-	Conversion int32
+	Conversion int64
 	Revenue    decimal.Decimal
 	Reach      int64
 }
@@ -54,7 +60,7 @@ type DailyStatPath struct {
 	Impression *int64
 	Clicks     *int64
 	Cost       *decimal.Decimal
-	Conversion *int32
+	Conversion *int64
 	Revenue    *decimal.Decimal
 	Reach      *int64
 }

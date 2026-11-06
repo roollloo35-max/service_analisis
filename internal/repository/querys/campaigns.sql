@@ -7,19 +7,26 @@ insert into
         target_url,
         start_date,
         end_date,
-        last_update
+        last_update,
+        external_id,
+        delete_atr,
+        version_atr
     )
 values
-    ($1, $2, $3, $4, $5, $6, now()) 
+    ($1, $2, $3, $4, $5, $6, now(), $7, $8, $9) 
     returning 
     id,
     name,
     status,
     budget,
+    created_at,
     target_url,
     start_date,
     end_date,
-    last_update;
+    last_update,
+    external_id,
+    delete_atr,
+    version_atr;
 
 -- name: GetCampaign :one
 select
@@ -31,7 +38,10 @@ select
     start_date, 
     created_at,
     end_date,
-    last_update
+    last_update,
+    external_id,
+    delete_atr,
+    version_atr
 from
     campaigns
 where
@@ -47,7 +57,10 @@ select
     start_date,
     created_at,
     end_date,
-    last_update
+    last_update,
+     external_id,
+    delete_atr,
+    version_atr
 from
     campaigns
 order by id offset $1 limit $2;
@@ -62,7 +75,10 @@ set
     target_url = coalesce(sqlc.narg('new_target_url')::text, target_url),
     start_date = coalesce(sqlc.narg('new_start_date'), start_date),
     end_date = coalesce(sqlc.narg('new_end_date'), end_date),
-    last_update = now()
+    last_update = now(),
+    external_id = coalesce(sqlc.narg('new_external_id'), external_id),
+    delete_atr = coalesce(sqlc.narg('new_delete_atr'), delete_atr),
+    version_atr = coalesce(sqlc.narg('new_version_atr'), version_atr)
 where
     id = sqlc.arg('id') returning 
     id,
@@ -72,4 +88,7 @@ where
     target_url,
     start_date,
     end_date,
-    last_update;
+    last_update,
+    external_id,
+    delete_atr,
+    version_atr;

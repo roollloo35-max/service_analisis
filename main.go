@@ -1,34 +1,24 @@
 package main
 
 import (
-	"alisisService/internal/database"
 	"context"
-	"log"
-	"time"
+	"fmt"
+	"os"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func main() {
 
-	ctxBackgrond := context.Background()
+	ctx := context.Background()
 
-	ctxToPing, cancel := context.WithTimeout(ctxBackgrond, 5*time.Second)
-	defer cancel()
-
-	conn, err := database.Connecton(ctxBackgrond)
-
+	pool, err := pgxpool.New(ctx, os.Getenv("postgresql://postgres:fgtH123G@localhost:5432/DataForAnalisis"))
 	if err != nil {
-		log.Fatalf("Failed to connected to the DataBase")
-	} else {
-		log.Println("Connection to DataBase succesfull ")
-
+		panic(fmt.Sprint("unable to create connection pool: %v", err))
 	}
 
-	if err := conn.Ping(ctxToPing); err != nil {
-		cancel()
-		conn.Close(ctxBackgrond)
-		log.Fatalf("Failed to ping to the DataBase for 5 second")
-	} else {
-		log.Println("ping to DataBase succesfull ")
-	}
+	defer pool.Close()
+
+	// queries := sqlc.New(pool)
 
 }

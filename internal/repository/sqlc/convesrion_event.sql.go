@@ -7,7 +7,7 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
+	"time"
 
 	"github.com/shopspring/decimal"
 )
@@ -25,12 +25,12 @@ insert into conversion_event
 `
 
 type CreateConversionEventParams struct {
-	CampaignID int64           `json:"campaign_id"`
-	Amount     decimal.Decimal `json:"amount"`
+	CampaignID int64                `json:"campaign_id"`
+	Amount     *decimal.NullDecimal `json:"amount"`
 }
 
 func (q *Queries) CreateConversionEvent(ctx context.Context, arg CreateConversionEventParams) (ConversionEvent, error) {
-	row := q.db.QueryRowContext(ctx, createConversionEvent, arg.CampaignID, arg.Amount)
+	row := q.db.QueryRow(ctx, createConversionEvent, arg.CampaignID, arg.Amount)
 	var i ConversionEvent
 	err := row.Scan(
 		&i.ID,
@@ -48,7 +48,7 @@ select id, campaign_id, occurred_at, amount from  conversion_event
 `
 
 func (q *Queries) GetConversion(ctx context.Context, id int64) (ConversionEvent, error) {
-	row := q.db.QueryRowContext(ctx, getConversion, id)
+	row := q.db.QueryRow(ctx, getConversion, id)
 	var i ConversionEvent
 	err := row.Scan(
 		&i.ID,
@@ -70,14 +70,14 @@ update conversion_event
 `
 
 type UpDataConversionParams struct {
-	NewCampaignID sql.NullInt64       `json:"new_campaign_id"`
-	NewOccurredAt sql.NullTime        `json:"new_occurred_at"`
-	NewAmount     decimal.NullDecimal `json:"new_amount"`
-	ID            int64               `json:"id"`
+	NewCampaignID *int64               `json:"new_campaign_id"`
+	NewOccurredAt *time.Time           `json:"new_occurred_at"`
+	NewAmount     *decimal.NullDecimal `json:"new_amount"`
+	ID            int64                `json:"id"`
 }
 
 func (q *Queries) UpDataConversion(ctx context.Context, arg UpDataConversionParams) (ConversionEvent, error) {
-	row := q.db.QueryRowContext(ctx, upDataConversion,
+	row := q.db.QueryRow(ctx, upDataConversion,
 		arg.NewCampaignID,
 		arg.NewOccurredAt,
 		arg.NewAmount,

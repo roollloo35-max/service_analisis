@@ -7,7 +7,6 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -28,18 +27,18 @@ insert into daily_stat(
 `
 
 type CreateDailyStatParams struct {
-	CampaignID  int64           `json:"campaign_id"`
-	DateDaily   time.Time       `json:"date_daily"`
-	Impressions int64           `json:"impressions"`
-	Clicks      int64           `json:"clicks"`
-	Cost        decimal.Decimal `json:"cost"`
-	Conversion  sql.NullInt32   `json:"conversion"`
-	Revenue     decimal.Decimal `json:"revenue"`
-	Reach       int64           `json:"reach"`
+	CampaignID  int64                `json:"campaign_id"`
+	DateDaily   time.Time            `json:"date_daily"`
+	Impressions int64                `json:"impressions"`
+	Clicks      int64                `json:"clicks"`
+	Cost        decimal.Decimal      `json:"cost"`
+	Conversion  *int64               `json:"conversion"`
+	Revenue     *decimal.NullDecimal `json:"revenue"`
+	Reach       int64                `json:"reach"`
 }
 
 func (q *Queries) CreateDailyStat(ctx context.Context, arg CreateDailyStatParams) (DailyStat, error) {
-	row := q.db.QueryRowContext(ctx, createDailyStat,
+	row := q.db.QueryRow(ctx, createDailyStat,
 		arg.CampaignID,
 		arg.DateDaily,
 		arg.Impressions,
@@ -75,7 +74,7 @@ select  id,campaign_id, date_daily, impressions,
 `
 
 func (q *Queries) GetDaily(ctx context.Context, id int64) (DailyStat, error) {
-	row := q.db.QueryRowContext(ctx, getDaily, id)
+	row := q.db.QueryRow(ctx, getDaily, id)
 	var i DailyStat
 	err := row.Scan(
 		&i.ID,
@@ -109,7 +108,7 @@ type GetDailysParams struct {
 }
 
 func (q *Queries) GetDailys(ctx context.Context, arg GetDailysParams) ([]DailyStat, error) {
-	rows, err := q.db.QueryContext(ctx, getDailys, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, getDailys, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -131,9 +130,6 @@ func (q *Queries) GetDailys(ctx context.Context, arg GetDailysParams) ([]DailySt
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -157,19 +153,19 @@ where
 `
 
 type UpdateDailyParams struct {
-	NewCampaignID sql.NullInt64       `json:"new_campaign_id"`
-	DateDaily     sql.NullTime        `json:"date_daily"`
-	Impressions   sql.NullInt64       `json:"impressions"`
-	Clicks        sql.NullInt64       `json:"clicks"`
-	Cost          decimal.NullDecimal `json:"cost"`
-	Conversion    sql.NullInt32       `json:"conversion"`
-	Revenue       decimal.NullDecimal `json:"revenue"`
-	Reach         sql.NullInt64       `json:"reach"`
-	ID            int64               `json:"id"`
+	NewCampaignID *int64               `json:"new_campaign_id"`
+	DateDaily     *time.Time           `json:"date_daily"`
+	Impressions   *int64               `json:"impressions"`
+	Clicks        *int64               `json:"clicks"`
+	Cost          *decimal.NullDecimal `json:"cost"`
+	Conversion    *int64               `json:"conversion"`
+	Revenue       *decimal.NullDecimal `json:"revenue"`
+	Reach         *int64               `json:"reach"`
+	ID            int64                `json:"id"`
 }
 
 func (q *Queries) UpdateDaily(ctx context.Context, arg UpdateDailyParams) (DailyStat, error) {
-	row := q.db.QueryRowContext(ctx, updateDaily,
+	row := q.db.QueryRow(ctx, updateDaily,
 		arg.NewCampaignID,
 		arg.DateDaily,
 		arg.Impressions,

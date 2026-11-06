@@ -2,83 +2,59 @@ package ttd
 
 import (
 	"alisisService/internal/domain"
-	"database/sql"
-	"time"
 
 	"github.com/shopspring/decimal"
 )
 
-func toNullDecimal(x *decimal.Decimal) decimal.NullDecimal {
-	if x == nil {
-		return decimal.NullDecimal{Decimal: *x, Valid: false}
+func StatusPtrToString(s *domain.Status) *string {
+	if s == nil {
+		return nil
+	}
+	v := string(*s)
+
+	return &v
+}
+
+func toNullDecimal(d *decimal.Decimal) *decimal.NullDecimal {
+	if d == nil {
+		return nil
 	}
 
-	return decimal.NullDecimal{
-		Decimal: *x,
+	return &decimal.NullDecimal{
+		Decimal: *d,
 		Valid:   true,
 	}
 }
 
-func toNullString(x *string) sql.NullString {
-	if x == nil {
-		return sql.NullString{Valid: false}
+func toNullDecimalLessPoint(d decimal.Decimal) *decimal.NullDecimal {
+	if d.Equal(decimal.Zero) {
+		return nil
 	}
 
-	return sql.NullString{
-		String: *x,
-		Valid:  true,
+	return &decimal.NullDecimal{
+		Decimal: d,
+		Valid:   true,
 	}
 }
 
-func toNullStatus(x *domain.Status) sql.NullString {
-
-	if x == nil {
-		return sql.NullString{Valid: false}
+func toDecimal(nd *decimal.NullDecimal) decimal.Decimal {
+	if nd == nil || !nd.Valid {
+		return decimal.Zero
 	}
 
-	return sql.NullString{
-		String: string(*x),
-		Valid:  true,
-	}
+	return nd.Decimal
 }
 
-func toNullTime(t *time.Time) sql.NullTime {
-	if t == nil {
-		return sql.NullTime{Valid: false}
+func toLessPointerInt64(i *int64) int64 {
+	if i == nil {
+		return 0
 	}
-	return sql.NullTime{
-		Time:  *t,
-		Valid: true}
+	return *i
 }
 
-func toNullInt32(cons int32) sql.NullInt32 {
-	if cons == 0 {
-		return sql.NullInt32{Int32: cons, Valid: false}
+func toAddPointerInt64(i int64) *int64 {
+	if i == 0 {
+		return nil
 	}
-
-	return sql.NullInt32{
-		Int32: cons,
-		Valid: true,
-	}
-}
-func toNullInt32IsPointner(cons *int32) sql.NullInt32 {
-	if cons == nil {
-		return sql.NullInt32{Int32: *cons, Valid: false}
-	}
-
-	return sql.NullInt32{
-		Int32: *cons,
-		Valid: true,
-	}
-}
-
-func toNullInt64(cons *int64) sql.NullInt64 {
-	if cons == nil {
-		return sql.NullInt64{Int64: *cons, Valid: false}
-	}
-
-	return sql.NullInt64{
-		Int64: *cons,
-		Valid: true,
-	}
+	return &i
 }

@@ -5,11 +5,18 @@
 package sqlc
 
 import (
-	"database/sql"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/shopspring/decimal"
 )
+
+type AdPlatform struct {
+	ID           int64     `json:"id"`
+	Code         string    `json:"code"`
+	NamePlatform string    `json:"name_platform"`
+	CreatedAt    time.Time `json:"created_at"`
+}
 
 type Campaign struct {
 	ID         int64           `json:"id"`
@@ -19,8 +26,11 @@ type Campaign struct {
 	Budget     decimal.Decimal `json:"budget"`
 	TargetUrl  string          `json:"target_url"`
 	StartDate  time.Time       `json:"start_date"`
-	EndDate    sql.NullTime    `json:"end_date"`
-	LastUpdate sql.NullTime    `json:"last_update"`
+	EndDate    *time.Time      `json:"end_date"`
+	LastUpdate *time.Time      `json:"last_update"`
+	ExternalID *int64          `json:"external_id"`
+	DeleteAtr  bool            `json:"delete_atr"`
+	VersionAtr int64           `json:"version_atr"`
 }
 
 type ConversionEvent struct {
@@ -28,24 +38,26 @@ type ConversionEvent struct {
 	CampaignID int64     `json:"campaign_id"`
 	OccurredAt time.Time `json:"occurred_at"`
 	// can be negative or positive
-	Amount decimal.Decimal `json:"amount"`
+	Amount *decimal.NullDecimal `json:"amount"`
 }
 
 type DailyStat struct {
-	ID          int64           `json:"id"`
-	CampaignID  int64           `json:"campaign_id"`
-	DateDaily   time.Time       `json:"date_daily"`
-	Impressions int64           `json:"impressions"`
-	Clicks      int64           `json:"clicks"`
-	Cost        decimal.Decimal `json:"cost"`
-	Conversion  sql.NullInt32   `json:"conversion"`
-	Revenue     decimal.Decimal `json:"revenue"`
-	Reach       int64           `json:"reach"`
+	ID          int64                `json:"id"`
+	CampaignID  int64                `json:"campaign_id"`
+	DateDaily   time.Time            `json:"date_daily"`
+	Impressions int64                `json:"impressions"`
+	Clicks      int64                `json:"clicks"`
+	Cost        decimal.Decimal      `json:"cost"`
+	Conversion  *int64               `json:"conversion"`
+	Revenue     *decimal.NullDecimal `json:"revenue"`
+	Reach       int64                `json:"reach"`
 }
 
 type User struct {
-	ID           int64     `json:"id"`
-	Email        string    `json:"email"`
-	PasswordHash string    `json:"password_hash"`
-	CreatedAt    time.Time `json:"created_at"`
+	ID           int64            `json:"id"`
+	Email        string           `json:"email"`
+	PasswordHash string           `json:"password_hash"`
+	CreatedAt    pgtype.Timestamp `json:"created_at"`
+	DeleteAtr    *bool            `json:"delete_atr"`
+	VersionAtr   int64            `json:"version_atr"`
 }

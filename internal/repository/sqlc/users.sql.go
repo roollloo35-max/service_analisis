@@ -7,7 +7,6 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -16,7 +15,7 @@ insert into users (
     password_hash
 ) values (
     $1, $2
-) returning id, email, password_hash, created_at
+) returning id, email, password_hash, created_at, delete_atr, version_atr
 `
 
 type CreateUserParams struct {
@@ -25,30 +24,34 @@ type CreateUserParams struct {
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser, arg.Email, arg.PasswordHash)
+	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.PasswordHash)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
 		&i.PasswordHash,
 		&i.CreatedAt,
+		&i.DeleteAtr,
+		&i.VersionAtr,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-select id, email, password_hash, created_at from users
+select id, email, password_hash, created_at, delete_atr, version_atr from users
 where email = $1 limit 1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
 		&i.PasswordHash,
 		&i.CreatedAt,
+		&i.DeleteAtr,
+		&i.VersionAtr,
 	)
 	return i, err
 }
@@ -61,23 +64,25 @@ set
     email = coalesce($2, email)
 where 
     email = $3
-returning id, email, password_hash, created_at
+returning id, email, password_hash, created_at, delete_atr, version_atr
 `
 
 type UpвateUsersParams struct {
-	NewPasswordHash sql.NullString `json:"new_password_hash"`
-	NewEmail        sql.NullString `json:"new_email"`
-	TargetEmail     string         `json:"target_email"`
+	NewPasswordHash *string `json:"new_password_hash"`
+	NewEmail        *string `json:"new_email"`
+	TargetEmail     string  `json:"target_email"`
 }
 
 func (q *Queries) UpвateUsers(ctx context.Context, arg UpвateUsersParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, upвateUsers, arg.NewPasswordHash, arg.NewEmail, arg.TargetEmail)
+	row := q.db.QueryRow(ctx, upвateUsers, arg.NewPasswordHash, arg.NewEmail, arg.TargetEmail)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Email,
 		&i.PasswordHash,
 		&i.CreatedAt,
+		&i.DeleteAtr,
+		&i.VersionAtr,
 	)
 	return i, err
 }

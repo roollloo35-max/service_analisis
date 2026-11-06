@@ -7,7 +7,6 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -22,28 +21,38 @@ insert into
         target_url,
         start_date,
         end_date,
-        last_update
+        last_update,
+        external_id,
+        delete_atr,
+        version_atr
     )
 values
-    ($1, $2, $3, $4, $5, $6, now()) 
+    ($1, $2, $3, $4, $5, $6, now(), $7, $8, $9) 
     returning 
     id,
     name,
     status,
     budget,
+    created_at,
     target_url,
     start_date,
     end_date,
-    last_update
+    last_update,
+    external_id,
+    delete_atr,
+    version_atr
 `
 
 type CreateCampaignParams struct {
-	Name      string          `json:"name"`
-	Status    string          `json:"status"`
-	Budget    decimal.Decimal `json:"budget"`
-	TargetUrl string          `json:"target_url"`
-	StartDate time.Time       `json:"start_date"`
-	EndDate   sql.NullTime    `json:"end_date"`
+	Name       string          `json:"name"`
+	Status     string          `json:"status"`
+	Budget     decimal.Decimal `json:"budget"`
+	TargetUrl  string          `json:"target_url"`
+	StartDate  time.Time       `json:"start_date"`
+	EndDate    *time.Time      `json:"end_date"`
+	ExternalID *int64          `json:"external_id"`
+	DeleteAtr  bool            `json:"delete_atr"`
+	VersionAtr int64           `json:"version_atr"`
 }
 
 type CreateCampaignRow struct {
@@ -51,20 +60,27 @@ type CreateCampaignRow struct {
 	Name       string          `json:"name"`
 	Status     string          `json:"status"`
 	Budget     decimal.Decimal `json:"budget"`
+	CreatedAt  time.Time       `json:"created_at"`
 	TargetUrl  string          `json:"target_url"`
 	StartDate  time.Time       `json:"start_date"`
-	EndDate    sql.NullTime    `json:"end_date"`
-	LastUpdate sql.NullTime    `json:"last_update"`
+	EndDate    *time.Time      `json:"end_date"`
+	LastUpdate *time.Time      `json:"last_update"`
+	ExternalID *int64          `json:"external_id"`
+	DeleteAtr  bool            `json:"delete_atr"`
+	VersionAtr int64           `json:"version_atr"`
 }
 
 func (q *Queries) CreateCampaign(ctx context.Context, arg CreateCampaignParams) (CreateCampaignRow, error) {
-	row := q.db.QueryRowContext(ctx, createCampaign,
+	row := q.db.QueryRow(ctx, createCampaign,
 		arg.Name,
 		arg.Status,
 		arg.Budget,
 		arg.TargetUrl,
 		arg.StartDate,
 		arg.EndDate,
+		arg.ExternalID,
+		arg.DeleteAtr,
+		arg.VersionAtr,
 	)
 	var i CreateCampaignRow
 	err := row.Scan(
@@ -72,10 +88,14 @@ func (q *Queries) CreateCampaign(ctx context.Context, arg CreateCampaignParams) 
 		&i.Name,
 		&i.Status,
 		&i.Budget,
+		&i.CreatedAt,
 		&i.TargetUrl,
 		&i.StartDate,
 		&i.EndDate,
 		&i.LastUpdate,
+		&i.ExternalID,
+		&i.DeleteAtr,
+		&i.VersionAtr,
 	)
 	return i, err
 }
@@ -90,7 +110,10 @@ select
     start_date,
     created_at,
     end_date,
-    last_update
+    last_update,
+     external_id,
+    delete_atr,
+    version_atr
 from
     campaigns
 order by id offset $1 limit $2
@@ -109,12 +132,15 @@ type GetAllCampaignsRow struct {
 	TargetUrl  string          `json:"target_url"`
 	StartDate  time.Time       `json:"start_date"`
 	CreatedAt  time.Time       `json:"created_at"`
-	EndDate    sql.NullTime    `json:"end_date"`
-	LastUpdate sql.NullTime    `json:"last_update"`
+	EndDate    *time.Time      `json:"end_date"`
+	LastUpdate *time.Time      `json:"last_update"`
+	ExternalID *int64          `json:"external_id"`
+	DeleteAtr  bool            `json:"delete_atr"`
+	VersionAtr int64           `json:"version_atr"`
 }
 
 func (q *Queries) GetAllCampaigns(ctx context.Context, arg GetAllCampaignsParams) ([]GetAllCampaignsRow, error) {
-	rows, err := q.db.QueryContext(ctx, getAllCampaigns, arg.Offset, arg.Limit)
+	rows, err := q.db.Query(ctx, getAllCampaigns, arg.Offset, arg.Limit)
 	if err != nil {
 		return nil, err
 	}
@@ -132,13 +158,13 @@ func (q *Queries) GetAllCampaigns(ctx context.Context, arg GetAllCampaignsParams
 			&i.CreatedAt,
 			&i.EndDate,
 			&i.LastUpdate,
+			&i.ExternalID,
+			&i.DeleteAtr,
+			&i.VersionAtr,
 		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -156,7 +182,10 @@ select
     start_date, 
     created_at,
     end_date,
-    last_update
+    last_update,
+    external_id,
+    delete_atr,
+    version_atr
 from
     campaigns
 where
@@ -171,12 +200,15 @@ type GetCampaignRow struct {
 	TargetUrl  string          `json:"target_url"`
 	StartDate  time.Time       `json:"start_date"`
 	CreatedAt  time.Time       `json:"created_at"`
-	EndDate    sql.NullTime    `json:"end_date"`
-	LastUpdate sql.NullTime    `json:"last_update"`
+	EndDate    *time.Time      `json:"end_date"`
+	LastUpdate *time.Time      `json:"last_update"`
+	ExternalID *int64          `json:"external_id"`
+	DeleteAtr  bool            `json:"delete_atr"`
+	VersionAtr int64           `json:"version_atr"`
 }
 
 func (q *Queries) GetCampaign(ctx context.Context, id int64) (GetCampaignRow, error) {
-	row := q.db.QueryRowContext(ctx, getCampaign, id)
+	row := q.db.QueryRow(ctx, getCampaign, id)
 	var i GetCampaignRow
 	err := row.Scan(
 		&i.ID,
@@ -188,6 +220,9 @@ func (q *Queries) GetCampaign(ctx context.Context, id int64) (GetCampaignRow, er
 		&i.CreatedAt,
 		&i.EndDate,
 		&i.LastUpdate,
+		&i.ExternalID,
+		&i.DeleteAtr,
+		&i.VersionAtr,
 	)
 	return i, err
 }
@@ -202,9 +237,12 @@ set
     target_url = coalesce($4::text, target_url),
     start_date = coalesce($5, start_date),
     end_date = coalesce($6, end_date),
-    last_update = now()
+    last_update = now(),
+    external_id = coalesce($7, external_id),
+    delete_atr = coalesce($8, delete_atr),
+    version_atr = coalesce($9, version_atr)
 where
-    id = $7 returning 
+    id = $10 returning 
     id,
     name,
     status,
@@ -212,38 +250,50 @@ where
     target_url,
     start_date,
     end_date,
-    last_update
+    last_update,
+    external_id,
+    delete_atr,
+    version_atr
 `
 
 type UpdateCampaignParams struct {
-	NewName      sql.NullString      `json:"new_name"`
-	NewStatus    sql.NullString      `json:"new_status"`
-	NewBudget    decimal.NullDecimal `json:"new_budget"`
-	NewTargetUrl sql.NullString      `json:"new_target_url"`
-	NewStartDate sql.NullTime        `json:"new_start_date"`
-	NewEndDate   sql.NullTime        `json:"new_end_date"`
-	ID           int64               `json:"id"`
+	NewName       *string              `json:"new_name"`
+	NewStatus     *string              `json:"new_status"`
+	NewBudget     *decimal.NullDecimal `json:"new_budget"`
+	NewTargetUrl  *string              `json:"new_target_url"`
+	NewStartDate  *time.Time           `json:"new_start_date"`
+	NewEndDate    *time.Time           `json:"new_end_date"`
+	NewExternalID *int64               `json:"new_external_id"`
+	NewDeleteAtr  *bool                `json:"new_delete_atr"`
+	NewVersionAtr *int64               `json:"new_version_atr"`
+	ID            int64                `json:"id"`
 }
 
 type UpdateCampaignRow struct {
-	ID         int64               `json:"id"`
-	Name       string              `json:"name"`
-	Status     string              `json:"status"`
-	Budget     decimal.NullDecimal `json:"budget"`
-	TargetUrl  string              `json:"target_url"`
-	StartDate  time.Time           `json:"start_date"`
-	EndDate    sql.NullTime        `json:"end_date"`
-	LastUpdate sql.NullTime        `json:"last_update"`
+	ID         int64           `json:"id"`
+	Name       string          `json:"name"`
+	Status     string          `json:"status"`
+	Budget     decimal.Decimal `json:"budget"`
+	TargetUrl  string          `json:"target_url"`
+	StartDate  time.Time       `json:"start_date"`
+	EndDate    *time.Time      `json:"end_date"`
+	LastUpdate *time.Time      `json:"last_update"`
+	ExternalID *int64          `json:"external_id"`
+	DeleteAtr  bool            `json:"delete_atr"`
+	VersionAtr int64           `json:"version_atr"`
 }
 
 func (q *Queries) UpdateCampaign(ctx context.Context, arg UpdateCampaignParams) (UpdateCampaignRow, error) {
-	row := q.db.QueryRowContext(ctx, updateCampaign,
+	row := q.db.QueryRow(ctx, updateCampaign,
 		arg.NewName,
 		arg.NewStatus,
 		arg.NewBudget,
 		arg.NewTargetUrl,
 		arg.NewStartDate,
 		arg.NewEndDate,
+		arg.NewExternalID,
+		arg.NewDeleteAtr,
+		arg.NewVersionAtr,
 		arg.ID,
 	)
 	var i UpdateCampaignRow
@@ -256,6 +306,9 @@ func (q *Queries) UpdateCampaign(ctx context.Context, arg UpdateCampaignParams) 
 		&i.StartDate,
 		&i.EndDate,
 		&i.LastUpdate,
+		&i.ExternalID,
+		&i.DeleteAtr,
+		&i.VersionAtr,
 	)
 	return i, err
 }

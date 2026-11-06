@@ -14,8 +14,8 @@ func ToDomainDailyStat(row sqlc.DailyStat) domain.DailyStat {
 		Impression: row.Impressions,
 		Clicks:     row.Clicks,
 		Cost:       row.Cost,
-		Conversion: row.Conversion.Int32,
-		Revenue:    row.Revenue,
+		Conversion: toLessPointerInt64(row.Conversion),
+		Revenue:    toDecimal(row.Revenue),
 		Reach:      row.Reach,
 	}
 
@@ -45,22 +45,22 @@ func ToCreateDailyStatParams(ds domain.DailyStat) sqlc.CreateDailyStatParams {
 		Impressions: ds.Impression,
 		Clicks:      ds.Clicks,
 		Cost:        ds.Cost,
-		Conversion:  toNullInt32(ds.Conversion),
-		Revenue:     ds.Revenue,
+		Conversion:  toAddPointerInt64(ds.Conversion),
+		Revenue:     toNullDecimalLessPoint(ds.Revenue),
 		Reach:       ds.Reach,
 	}
 }
 
 func ToUpdateDailyStat(id int64, dsp domain.DailyStatPath) sqlc.UpdateDailyParams {
 	return sqlc.UpdateDailyParams{
-		NewCampaignID: toNullInt64(dsp.CampaignID),
-		DateDaily:     toNullTime(dsp.DateDaily),
-		Impressions:   toNullInt64(dsp.Impression),
-		Clicks:        toNullInt64(dsp.Clicks),
+		NewCampaignID: dsp.CampaignID,
+		DateDaily:     dsp.DateDaily,
+		Impressions:   dsp.Impression,
+		Clicks:        dsp.Clicks,
 		Cost:          toNullDecimal(dsp.Cost),
-		Conversion:    toNullInt32IsPointner(dsp.Conversion),
+		Conversion:    dsp.Conversion,
 		Revenue:       toNullDecimal(dsp.Revenue),
-		Reach:         toNullInt64(dsp.Reach),
+		Reach:         dsp.Reach,
 		ID:            id,
 	}
 }

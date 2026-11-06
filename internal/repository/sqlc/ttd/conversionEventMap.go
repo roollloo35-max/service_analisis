@@ -10,20 +10,20 @@ func toDomainConversionEvent(row sqlc.ConversionEvent) domain.ConversionEvent {
 		ID:         row.ID,
 		CampaignID: row.CampaignID,
 		OccurredAt: row.OccurredAt,
-		Amount:     row.Amount,
+		Amount:     toDecimal(row.Amount),
 	}
 }
 
 func toCreateConversionEvent(dce domain.ConversionEvent) sqlc.ConversionEvent {
 	return sqlc.ConversionEvent{
-		Amount: dce.Amount,
+		Amount: toNullDecimalLessPoint(dce.Amount),
 	}
 }
 
 func toUpdateConversionEvent(id int64, dcep domain.ConversionEventPath) sqlc.UpDataConversionParams {
 	return sqlc.UpDataConversionParams{
-		NewCampaignID: toNullInt64(dcep.CampaignID),
-		NewOccurredAt: toNullTime(dcep.OccurredAt),
+		NewCampaignID: dcep.CampaignID,
+		NewOccurredAt: dcep.OccurredAt,
 		NewAmount:     toNullDecimal(dcep.Amount),
 		ID:            id,
 	}
