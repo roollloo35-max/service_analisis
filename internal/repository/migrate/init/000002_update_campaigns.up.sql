@@ -1,0 +1,3 @@
+alter table campaigns drop column cost_per_click;
+
+
