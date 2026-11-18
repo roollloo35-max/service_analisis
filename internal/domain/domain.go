@@ -77,3 +77,15 @@ type ConversionEventPath struct {
 	OccurredAt *time.Time
 	Amount     *decimal.Decimal
 }
+
+type AdPlatform struct {
+	ID           int64
+	Code         string
+	NamePlatform string
+	CreatedAt    time.Time
+}
+
+type AdPlatformPath struct {
+	Code         string
+	NamePlatform string
+}

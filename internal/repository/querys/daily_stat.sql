@@ -9,6 +9,7 @@ insert into daily_stat(
     conversion,
     revenue, 
     reach
+    
 ) values ($1,$2,$3,$4,$5,$6,$7,$8) returning id, campaign_id, date_daily, impressions, clicks,  cost, conversion, revenue, reach;
 
 -- name: GetDailys :many

@@ -29,10 +29,20 @@ func ToDomainDailyStatParams(limit int32, offset int32) sqlc.GetDailysParams {
 }
 
 func ToDomainDailyStats(rows []sqlc.DailyStat) []domain.DailyStat {
-	out := make([]domain.DailyStat, len(rows))
+	out := make([]domain.DailyStat, 0, len(rows))
 
-	for i, row := range rows {
-		out[i] = ToDomainDailyStat(row)
+	for _, row := range rows {
+		out = append(out, domain.DailyStat{
+			ID:         row.ID,
+			CampaignID: row.CampaignID,
+			DateDaily:  row.DateDaily,
+			Impression: row.Impressions,
+			Clicks:     row.Clicks,
+			Cost:       row.Cost,
+			Conversion: toLessPointerInt64(row.Conversion),
+			Revenue:    toDecimal(row.Revenue),
+			Reach:      row.Reach,
+		})
 	}
 
 	return out

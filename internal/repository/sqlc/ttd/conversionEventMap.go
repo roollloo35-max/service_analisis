@@ -5,7 +5,7 @@ import (
 	"alisisService/internal/repository/sqlc"
 )
 
-func toDomainConversionEvent(row sqlc.ConversionEvent) domain.ConversionEvent {
+func ToDomainConversionEvent(row sqlc.ConversionEvent) domain.ConversionEvent {
 	return domain.ConversionEvent{
 		ID:         row.ID,
 		CampaignID: row.CampaignID,
@@ -14,13 +14,21 @@ func toDomainConversionEvent(row sqlc.ConversionEvent) domain.ConversionEvent {
 	}
 }
 
-func toCreateConversionEvent(dce domain.ConversionEvent) sqlc.ConversionEvent {
-	return sqlc.ConversionEvent{
-		Amount: toNullDecimalLessPoint(dce.Amount),
+func ToConversionParams(row sqlc.ConversionEvent) sqlc.CreateConversionEventParams {
+	return sqlc.CreateConversionEventParams{
+		CampaignID: row.CampaignID,
+		Amount:     row.Amount,
 	}
 }
 
-func toUpdateConversionEvent(id int64, dcep domain.ConversionEventPath) sqlc.UpDataConversionParams {
+func ToCreateConversionEvent(dce domain.ConversionEvent) sqlc.ConversionEvent {
+	return sqlc.ConversionEvent{
+		Amount:     toNullDecimalLessPoint(dce.Amount),
+		CampaignID: dce.CampaignID,
+	}
+}
+
+func ToUpdateConversionEvent(id int64, dcep domain.ConversionEventPath) sqlc.UpDataConversionParams {
 	return sqlc.UpDataConversionParams{
 		NewCampaignID: dcep.CampaignID,
 		NewOccurredAt: dcep.OccurredAt,

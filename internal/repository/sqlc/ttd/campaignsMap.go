@@ -5,6 +5,24 @@ import (
 	"alisisService/internal/repository/sqlc"
 )
 
+func ToDomaintCampaign(com sqlc.Campaign) domain.Campaign {
+
+	return domain.Campaign{
+		ID:         com.ID,
+		Name:       com.Name,
+		Status:     domain.Status(com.Status),
+		Budget:     com.Budget,
+		CreatedAt:  com.CreatedAt,
+		TargetURL:  com.TargetUrl,
+		StartDate:  com.StartDate,
+		EndDate:    com.EndDate,
+		LastUpdate: com.LastUpdate,
+		ExternalID: com.ExternalID,
+		DeleteAtr:  com.DeleteAtr,
+		VersionAtr: com.VersionAtr,
+	}
+}
+
 func ToCampaignRow(row sqlc.CreateCampaignRow) sqlc.Campaign {
 	return sqlc.Campaign{
 		ID:         row.ID,
